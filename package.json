@@ -1,0 +1,19 @@
+{
+  "name": "autofill",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "npm install && node app.js",
+    "dev": "nodemon app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "edmond.io",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "newman": "^4.2.2",
+    "newman-reporter-console": "file:newman-reporter-console",
+    "socket.io": "^2.1.1"
+  }
+}

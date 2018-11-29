@@ -1,0 +1,11 @@
+{
+  "name": "newman-reporter-console",
+  "version": "0.0.2",
+  "description": "a basic console log based reporter for newman",
+  "main": "newman-reporter-console.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "edmond.io",
+  "license": "ISC"
+}

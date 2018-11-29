@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Autofill</title>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        ul{
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            white-space: nowrap;
+        }
+        li .time{
+            height: 16px;
+            line-height: 16px;
+            width: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <h1>Hi.</h1>
+        <form class="col s12" id="form">
+            <div class="row">
+                <div class="input-field col s3 m2">
+                    <input placeholder="User Name" id="username" type="text" class="validate" required>
+                    <label for="username">User Name</label>
+                </div>
+                <div class="input-field col s3 m2">
+                    <input placeholder="Password" id="password" type="password" class="validate" required>
+                    <label for="password">Password</label>
+                </div>
+                <div class="input-field col s3 m3">
+                    <input placeholder="Project Name / Code" id="project" type="text" class="validate" required>
+                    <label for="project">Project</label>
+                    <span class="helper-text" data-error="wrong" data-success="right">RegEx search for project name</span>
+                </div>
+                <div class="input-field col s3 m3">
+                    <input placeholder="Activity Name / Code" id="activity" type="text" class="validate" required>
+                    <label for="activity">Activity</label>
+                    <span class="helper-text" data-error="wrong" data-success="right">RegEx search for activity name</span>
+                </div>
+                <div class="input-field col s3 m1">
+                    <input placeholder="Month" id="month" type="number" class="validate" min="1" max="12" required>
+                    <label for="month">Month</label>
+                </div>
+                <div class="col s6 m1">
+                    <button class="btn waves-effect waves-light" type="submit" name="action" id="run">Submit
+                        <i class="material-icons right">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row" id="panel">
+        <ul id="messages"></ul>
+    </div>
+
+    <script>
+        $(function () {
+            var origin = window.location.origin;
+            var socket = io.connect(origin);
+
+            socket.on('log_message', function(obj){
+                console.log(JSON.stringify(obj))
+                var clz = obj["class"] === undefined ? null : obj["class"];
+                var msg = obj["data"]
+
+                var date = new Date();
+                var time = $("<div>").addClass("chip time").text(date.toLocaleTimeString());
+                var span = $("<span>").addClass(clz).text(msg);
+
+                $('#messages').append($('<li>').append(time).append(span));
+
+                window.scrollTo(0, document.body.scrollHeight);
+            });
+
+            // for debug
+            $("#username").val("")
+            $("#password").val("")
+            $("#project").val(".*")
+            $("#activity").val(".*")
+            $("#month").val("11")
+
+
+            $("#form").submit(function(e){
+                e.preventDefault();
+
+                var data = {};
+                data.user = $("#username").val()
+                data.pw = $("#password").val()
+                data.project = $("#project").val()
+                data.activity = $("#activity").val()
+                data.month = $("#month").val()
+
+                $.ajax({
+                    url: '/run',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    success: function(msg) {
+                        console.log("ok")
+                    }
+                });
+
+                // var form_data = new FormData(this);
+                // $.post("/run", form_data);
+                $("#messages").empty()
+            })
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
