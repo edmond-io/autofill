@@ -25,23 +25,28 @@ var envObj = {
 };
 
 
-function runNewman(){
+function runNewman(userName) {
     return newman.run({
         collection: require('./AUF.postman_collection.json'),
         reporters: [
             "console"
             , "cli"
         ],
+        reporter: {
+            "console": {
+                userName: userName
+            }
+        },
         environment: envObj
     }).on('start', function (err, args){
-        console.log('running the script...');
+        send('running the script...', userName);
 
     }).on('done', function (err, summary){
         if (err || summary.error) {
-            console.error('collection run encountered an error.');
+            sendErr('collection run encountered an error.', userName);
         }
         else {
-            console.log('script completed.');
+            send('script completed.', userName);
         }
     });
 }
@@ -53,7 +58,9 @@ router.post('/run', function(req, res){
     envObj.values[2].value = req.body.month
     envObj.values[3].value = req.body.activity
     envObj.values[4].value = req.body.project
-    runNewman()
+
+
+    runNewman(req.body.user)
     res.send("OK")
 });
 

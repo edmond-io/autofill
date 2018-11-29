@@ -46,6 +46,7 @@
 							"    if (s != null) {",
 							"        postman.setEnvironmentVariable(\"pw\", \"\");",
 							"    }",
+                          "    postman.setNextRequest(null)",
 							"    ",
 							"} else {",
 							"    tests[\"Logged in successfully.\"] = 1",

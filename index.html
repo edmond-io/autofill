@@ -39,10 +39,10 @@
             <li><a class="waves-effect waves-light modal-trigger" href="#help"><i class="material-icons">help</i></a>
             </li>
             <li><a class="waves-effect waves-light modal-trigger"
-                   href="#version"><span class="badges">v1.0.0</span></a></li>
+                   href="#version"><span class="badges">v1.0.2</span></a></li>
 
         </ul>
-        <a href="#" class="title">Auto Fill OrangeHRM Timesheet</a>
+        <a href="#" class="title flow-text">Auto Fill OrangeHRM Timesheet</a>
     </div>
 
 </nav>
@@ -50,8 +50,16 @@
 <div id="version" class="modal">
     <div class="modal-content">
         <h4>Change History</h4>
+
+        <h5>v1.0.2 - 20181129</h5>
+        <ul>
+            <li>[Fixed] WS broadcasting issue</li>
+        </ul>
+
         <h5>v1.0.0 - 20181129</h5>
-        <p>[Added] Support public holiday</p>
+        <ul>
+            <li>[Added] Support public holiday</li>
+        </ul>
 
     </div>
     <div class="modal-footer">
@@ -95,7 +103,7 @@
                 </tr>
                 <tr>
                     <td>pw</td>
-                    <td><code>string</code> Your password. would be deleted after login</td>
+                    <td><code>string</code> Your password</td>
                     <td>passw0rd</td>
                 </tr>
                 <tr>
@@ -112,11 +120,6 @@
                     <td>activity</td>
                     <td><code>string</code> Activity name, will read as RegExp for case-insensitive search</td>
                     <td>bug fix</td>
-                </tr>
-                <tr>
-                    <td>session</td>
-                    <td><code>auto-generated</code> Your session</td>
-                    <td>N/A</td>
                 </tr>
                 </tbody>
             </table>
@@ -144,20 +147,13 @@
 </div>
 
 <main>
-    <div class="container">
-        <blockquote>
-            This tool helps you <b>auto-fill</b> annonying timesheet in orangeHRM.
-            It supports searching project and activity by name.
-            Most importantly, it fills public holiday for you. (Medial leave is coming soon...)
-        </blockquote>
-    </div>
-
+    <br/>
     <div class="row">
-        <form class="col s12" id="form">
-            <div class="row">
+        <form class="col s12 valign-wrapper" id="form">
+            <div class="col s12">
                 <div class="input-field col s3 m2">
                     <input placeholder="User Name" id="username" type="text" class="validate" required
-                           autocomplete="on">
+                           autocomplete="on" autofocus>
                     <label for="username">User Name</label>
                 </div>
                 <div class="input-field col s3 m2">
@@ -182,11 +178,11 @@
                            autocomplete="on">
                     <label for="month">Month</label>
                 </div>
-                <div class="col s6 m1">
+                <div class="input-field col offset-s6 s3 m1" style="padding: 0">
                     <button class="btn waves-effect waves-light red lighten-1 hoverable" type="submit" name="action"
                             id="run">
-                        <span class="hide-on-med-only">Submit</span>
-                        <i class="material-icons right">send</i>
+                        <span class="show-on-small">Submit</span>
+                        <i class="material-icons">send</i>
                     </button>
                 </div>
             </div>
@@ -201,13 +197,14 @@
     $(function () {
         var origin = window.location.origin;
         var socket = io.connect(origin);
+        var date = new Date();
 
         socket.on('log_message', function (obj) {
             var clz = obj["class"] === undefined ? null : obj["class"];
             var msg = obj["data"]
 
-            var date = new Date();
-            var time = $("<div>").addClass("chip time").text(date.toLocaleTimeString());
+
+            var time = $("<div>").addClass("chip time").text(date.toTimeString().split(' ')[0]);
             var span = $("<span>").addClass(clz).text(msg);
 
             $('#messages').append($('<li>').append(time).append(span));
@@ -215,8 +212,8 @@
             window.scrollTo(0, document.body.scrollHeight);
         });
 
-        var defaultMonth = new Date().getMonth() + 1;
-        if (new Date().getDate() <= 14)
+        var defaultMonth = date.getMonth() + 1;
+        if (date.getDate() <= 14)
             defaultMonth = defaultMonth - 1;
 
         $("#username").val("")
@@ -235,6 +232,8 @@
             data.project = $("#project").val()
             data.activity = $("#activity").val()
             data.month = $("#month").val()
+
+            socket.emit("user", data.user);
 
             $.ajax({
                 url: '/run',
