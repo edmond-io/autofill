@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.1.1] - 20181202
+### Changed
+- Fixed timestamp issue
+
 ## [1.1.0] - 20181202
 ### Added
 - Add .env for environment control

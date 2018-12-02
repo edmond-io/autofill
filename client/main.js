@@ -1,14 +1,13 @@
 $(function () {
     let origin = window.location.origin;
     let socket = io.connect(origin);
-    let date = new Date();
 
     // web socket
     socket.on('log_message', function (obj) {
         let clz = obj["class"] === undefined ? null : obj["class"];
         let msg = obj["data"];
 
-        let time = $("<div>").addClass("chip time").text(date.toTimeString().split(' ')[0]);
+        let time = $("<div>").addClass("chip time").text(new Date().toTimeString().split(' ')[0]);
         let span = $("<span>").addClass(clz).text(msg);
 
         $('#messages').append($('<li>').append(time).append(span));
@@ -17,6 +16,7 @@ $(function () {
     });
 
     // set default values
+    let date = new Date();
     let defaultMonth = date.getMonth() + 1;
     if (date.getDate() <= 14)
         defaultMonth = defaultMonth - 1;
