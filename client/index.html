@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Autofill</title>
+    <script src="static/socket.io-1.4.5.js"></script>
+    <script src="static/jquery-2.2.4.min.js"></script>
+    <script src="static/main.js"></script>
+    <link href="static/material-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/materialize.min.css">
+    <link rel="stylesheet" href="static/style.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper">
+        <ul id="nav-mobile" class="right">
+            <li><a class="waves-effect waves-light modal-trigger" href="#help"><i class="material-icons">help</i></a>
+            </li>
+            <li><a class="waves-effect waves-light modal-trigger"
+                   href="#changelog"><span class="badges" id="appVersion"></span></a></li>
+
+        </ul>
+        <a href="#" class="title flow-text">Auto Fill OrangeHRM Timesheet</a>
+    </div>
+
+</nav>
+
+<div id="changelog" class="modal bottom-sheet">
+    <div class="modal-content">
+    </div>
+    <div class="modal-footer">
+        <a href="https://github.com/edmond-io/autofill/blob/master/CHANGELOG.md"
+           class="btn-flat"
+           style="float:left">
+            VIEW FULL CHANGELOG
+        </a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat grey darken-1 white-text">CLOSE</a>
+    </div>
+</div>
+
+<div id="help" class="modal modal-fixed-footer">
+    <div class="modal-content">
+        <div class="docs-desc-body pm-markdown"><p></p>
+            <p></p><h5 id="auto-fill-orangehrm-timesheet">Auto Fill
+                OrangeHRM Timesheet</h5>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p>This tool helps you <strong>auto-fill</strong> annonying <strong>timesheet</strong> in orangeHRM. It
+                supports searching project and activity by name. Most importantly, it fills <strong>public
+                    holiday</strong> for you. Follow the instruction to setup and you are set free!</p>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p><h6>Instructions:</h6>
+            <p></p>
+            <p></p>
+            <p></p>
+            <p></p><h4>1. Update environment variables</h4>
+            <p></p>
+            <p></p>
+            <table>
+                <tbody>
+                <tr>
+                    <th>Variable</th>
+                    <th>Description</th>
+                    <th>Example</th>
+                </tr>
+                <tr>
+                    <td>user</td>
+                    <td><code>string</code> Your login id</td>
+                    <td>eason.chan</td>
+                </tr>
+                <tr>
+                    <td>pw</td>
+                    <td><code>string</code> Your password, it will be encrypted no worries.</td>
+                    <td>passw0rd</td>
+                </tr>
+                <tr>
+                    <td>month</td>
+                    <td><code>integer</code> 1 to 12</td>
+                    <td>11</td>
+                </tr>
+                <tr>
+                    <td>project</td>
+                    <td><code>string</code> Project name, will read as RegExp for case-insensitive search</td>
+                    <td>lcs</td>
+                </tr>
+                <tr>
+                    <td>activity</td>
+                    <td><code>string</code> Activity name, will read as RegExp for case-insensitive search</td>
+                    <td>bug fix</td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <p></p>
+            <p></p>
+            <h3>2. Click Submit</h3>
+            <p></p>
+            <p></p>
+            <ul>
+                <li>Follow the instruction in the logs. It is easy to set up.</li>
+            </ul>
+            <h3>3. Enjoy</h3>
+            <ul class="browser-default">
+                <li>Note that submitted timesheet would be skipped</li>
+                <li>For private use only</li>
+            </ul>
+            <h3>4. Afraid of your privacy?</h3>
+            <p>It is promised that no logging is enabled in production mode, and the password are encrypted before
+                the transmission. You could even publish the whole app yourself as the project is open sourced.</p>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <a href="https://github.com/edmond-io/autofill"
+           class="modal-close waves-effect waves-green btn-flat amber-text" style="float: left">SOURCE CODE</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat teal white-text">OK</a>
+    </div>
+</div>
+
+<main>
+    <div class="container">
+        <blockquote>
+            This tool helps you <strong>auto-fill</strong> annonying <strong>timesheet</strong> in orangeHRM. It
+            supports searching project and activity by name. Most importantly, it fills <strong>public
+            holiday</strong> for you.
+        </blockquote>
+    </div>
+    <div class="row">
+        <form class="col s12 valign-wrapper" id="form">
+            <div class="col s12">
+                <div class="input-field col s5 m2">
+                    <input placeholder="User Name" id="username" type="text" class="validate" required
+                           autocomplete="on" autofocus>
+                    <label for="username">User Name</label>
+                </div>
+                <div class="input-field col s5 m2">
+                    <input placeholder="Password" id="password" type="password" class="validate" required
+                           autocomplete="on" onchange="$(this).removeClass('masked')">
+                    <label for="password">Password</label>
+                </div>
+                <div class="input-field col s2 m1">
+                    <input placeholder="Month" id="month" type="number" class="validate" min="1" max="12" required
+                           autocomplete="on">
+                    <label for="month">Month</label>
+                </div>
+                <div class="input-field col s5 m3">
+                    <input placeholder="Project Name / Code" id="project" type="text" class="validate"
+                           autocomplete="on">
+                    <label for="project">Project</label>
+                    <span class="helper-text" data-error="wrong" data-success="right">Search for project name</span>
+                </div>
+                <div class="input-field col s5 m3">
+                    <input placeholder="Activity Name / Code" id="activity" type="text" class="validate"
+                           autocomplete="on">
+                    <label for="activity">Activity</label>
+                    <span class="helper-text" data-error="wrong" data-success="right">Search for activity name</span>
+                </div>
+                <div class="input-field col s2 m1" style="padding: 0">
+                    <button class="btn waves-effect waves-light red lighten-1 hoverable" type="submit" name="action"
+                            id="run">
+                        <span class="show-on-small">Submit</span>
+                        <i class="material-icons">send</i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        <div class="col s12" id="panel">
+            <ul id="messages">
+            </ul>
+            <div class="loader hidden"></div>
+            <div class="human"></div>
+        </div>
+
+        <div class="col s12">
+            <label id="autoscroll">
+                <input type="checkbox" checked="checked" id="scroll" class="filled-in">
+                <span>Auto-scroll with log output</span>
+            </label>
+
+            <div id="totop" onclick="window.scrollTo(0, 0)" class="waves-effect">
+                <span>To Top</span>
+                <i class="material-icons grey white-text right">keyboard_arrow_up</i>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="static/materialize.min.js"></script>
+</body>
+</html>

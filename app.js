@@ -1,40 +1,59 @@
-var express = require('express');
-var autofill = require('./autofill');
-var port = process.env.PORT || 8282;
-var app = express();
-var server = require('http').Server(app)
-var io = require('socket.io')(server)
-
-var events = require('events');
-var eventEmitter = new events.EventEmitter();
+const express = require('express');
+const path = require('path');
+const app = express();
 
 
+let index = require('./routes/index');
+let autofill = require('./routes/run');
+let changelog = require('./routes/changelog');
+
+// set up for socket io
+const server = require('http').Server(app)
+const io = require('socket.io')(server)
+
+// set up for WS event emitter
+const events = require('events');
+const eventEmitter = new events.EventEmitter();
+
+// load environment variables
+require('dotenv').config();
+
+// View Engine
+// app.set('views', path.join(__dirname, 'client'));
+app.set('views', '/');
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
+// Set static Folder
+
+
+// MW
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}))
-app.use('/', autofill);
-
-
-server.listen(port, function(){
-    console.log("Listening on *:" + port);
+server.listen(process.env.PORT, function () {
+    console.log("Listening on *:" + process.env.PORT);
 });
 
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
+
+// routes
+app.use(express.static(path.join(__dirname, 'client')));
+app.use('/', index);
+app.use('/run', autofill);
+app.use('/changelog', changelog);
+app.use('/history', express.static(path.join(__dirname, 'newman')));
+app.use('/static', express.static(path.join(__dirname, 'client')));
+
 
 /*
 Array to store the list of users along with there respective socket id.
 */
-var users = [];
+const users = [];
 
 io.on('connection', function (socket) {
 
     socket.emit("log_message", {data: "Connected WS. Welcome.", class: "grey-text"});
-    socket.emit("log_message", {data: "This tool helps you auto-fill annonying timesheet in orangeHRM."});
-    socket.emit("log_message", {data: "It supports searching project and activity by name."});
-    socket.emit("log_message", {data: "Most importantly, it fills public holiday for you."});
-    socket.emit("log_message", {data: "Medical leaves are coming soon... Stay tuned!"});
     socket.emit("log_message", {data: "Just enter your user name and password to start. :)", class: "teal-text"});
+    socket.emit("log_message", {data: "Medical leaves are coming soon... Stay tuned!"});
 
     socket.on('user', function (userName) {
         users.push({
@@ -48,11 +67,11 @@ io.on('connection', function (socket) {
 
     socket.on('disconnect', function () {
 
-        for (var i = 0; i < users.length; i++) {
+        for (let i = 0; i < users.length; i++) {
 
             if (users[i].id === socket.id) {
+                send(users[i].user + " left.")
                 users.splice(i, 1);
-                console.log(users[i].user + " left.")
             }
         }
     });
@@ -60,8 +79,8 @@ io.on('connection', function (socket) {
 
 eventEmitter.on('logging', function (message, clz, user) {
     if (user) {
-        var socketId;
-        for (var i = 0; i < users.length; i++) {
+        let socketId;
+        for (let i = 0; i < users.length; i++) {
             if (users[i].user === user) {
                 socketId = users[i].id
             }
@@ -81,24 +100,34 @@ eventEmitter.on('logging', function (message, clz, user) {
 });
 
 
+// Exception handling
+app.all('*', function (req, res) {
+    console.log("[TRACE] Server 404 request: " + req.originalUrl);
+    res.redirect("/")
+});
 
-// Override console.log
-var originConsoleLog = console.log;
-console.log = function(data) {
-    eventEmitter.emit('logging', data);
-    originConsoleLog(data);
-};
 
-var originConsoleErr = console.error;
-console.error = function(data) {
-    eventEmitter.emit('logging', data);
-    originConsoleErr(data);
-};
+originConsoleLog = console.log;
+originConsoleErr = console.error;
+
+if (process.env.NODE_ENV === 'DEV') {
+
+    // Override console.log
+    console.log = function (data) {
+        eventEmitter.emit('logging', "DEV: " + data, "grey-text text-lighten-1");
+        originConsoleLog(data);
+    };
+
+    console.error = function (data) {
+        eventEmitter.emit('logging', data);
+        originConsoleErr(data);
+    };
+}
 
 send = function (data, userName) {
     eventEmitter.emit('logging', data, null, userName);
     originConsoleLog(data);
-}
+};
 
 sendErr = function (data, userName) {
     eventEmitter.emit('logging', data, "red-text", userName);

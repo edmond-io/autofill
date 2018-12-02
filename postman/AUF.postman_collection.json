@@ -2,8 +2,8 @@
 	"variables": [],
 	"info": {
 		"name": "AUF",
-		"_postman_id": "35de6c2f-9bba-762d-4971-23c7c54b30fe",
-		"description": "# Auto Fill OrangeHRM Timesheet\nThis tool helps you **auto-fill** ~~annonying~~ **timesheet** in orangeHRM. It supports searching project and activity by name. Most importantly, it fills **public hoiday** for you. Follow the instruction to setup and you are set free!\n\n## Instructions:\n\n### 1. Update environment variables\n\n<table>\n<tr>\n\t<th>Variable</th>\n\t<th>Description</th>\n\t<th>Example</th>\n</tr>\n<tr>\n\t<td>user</td>\n\t<td><code>string</code> Your login id</td>\n\t<td>eason.chan</td>\n</tr>\n<tr>\n\t<td>pw</td>\n\t<td><code>string</code> Your password. would be deleted after login</td>\n\t<td>passw0rd</td>\n</tr>\n<tr>\n\t<td>month</td>\n\t<td><code>integer</code> 1 to 12</td>\n\t<td>11</td>\n</tr>\n<tr>\n\t<td>project</td>\n\t<td><code>string</code> Project name, will read as RegExp for case-insensitive search</td>\n\t<td>hactl.*lcs</td>\n</tr>\n<tr>\n\t<td>activity</td>\n\t<td><code>string</code> Activity name, will read as RegExp for case-insensitive search</td>\n\t<td>bug fix</td>\n</tr>\n<tr>\n\t<td>session</td>\n\t<td><code>auto-generated</code> Your session</td>\n\t<td>N/A</td>\n</tr>\n</table>\n\n\n### 2. Click Run for this collection\n- Environment: choose the one you setup\n\n### 3. Enjoy\n- Note that submitted timesheet would be skipped\n- For private use only",
+		"_postman_id": "11474d5a-c051-bffc-7f3a-7d54432fbb58",
+		"description": "# Auto Fill OrangeHRM Timesheet\nThis tool helps you **auto-fill** ~~annonying~~ **timesheet** in orangeHRM. It supports searching project and activity by name. Most importantly, it fills **public holiday** for you. Follow the instruction to setup and you are set free!\n\n## Instructions:\n\n### 1. Update environment variables\n\n<table>\n<tr>\n\t<th>Variable</th>\n\t<th>Description</th>\n\t<th>Example</th>\n</tr>\n<tr>\n\t<td>user</td>\n\t<td><code>string</code> Your login id</td>\n\t<td>eason.chan</td>\n</tr>\n<tr>\n\t<td>pw</td>\n\t<td><code>string</code> Your password. would be deleted after login</td>\n\t<td>passw0rd</td>\n</tr>\n<tr>\n\t<td>month</td>\n\t<td><code>integer</code> 1 to 12</td>\n\t<td>11</td>\n</tr>\n<tr>\n\t<td>project</td>\n\t<td><code>string</code> Project name, will read as RegExp for case-insensitive search</td>\n\t<td>hactl.*lcs</td>\n</tr>\n<tr>\n\t<td>activity</td>\n\t<td><code>string</code> Activity name, will read as RegExp for case-insensitive search</td>\n\t<td>bug fix</td>\n</tr>\n<tr>\n\t<td>session</td>\n\t<td><code>auto-generated</code> Your session</td>\n\t<td>N/A</td>\n</tr>\n<tr>\n\t<td>HRM_HOST</td>\n\t<td><code>string</code> URL to the orangehrm</td>\n\t<td>http://www.xxx.com/orangehrm</td>\n</tr>\n</table>\n\n\n### 2. Click Run for this collection\n- Environment: choose the one you setup\n\n### 3. Enjoy\n- Note that submitted timesheet would be skipped\n- For private use only",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
@@ -21,11 +21,9 @@
 							"var month = postman.getEnvironmentVariable(\"month\")",
 							"isLoggedIn = responseBody.has(\"Welcome \")",
 							"",
-							"if (postman.getEnvironmentVariable(\"month\") == null",
-							"        || postman.getEnvironmentVariable(\"user\") == null",
-							"        || postman.getEnvironmentVariable(\"month\") == null",
-							"        || postman.getEnvironmentVariable(\"project\") == null",
-							"        || postman.getEnvironmentVariable(\"activity\") == null){",
+							"if (!month",
+							"        || !postman.getEnvironmentVariable(\"user\")",
+							"        || !pw3){",
 							"    tests[\"Please specify your Environment!\"] = 0",
 							"    tests[\"- user: your login id\"] = 0",
 							"    tests[\"- pw: your password\"] = 0",
@@ -36,17 +34,14 @@
 							"    postman.setNextRequest(null)",
 							"    ",
 							"} else if (!isLoggedIn){",
-							"    tests[\"Invalid user/password\"] = 0",
-							"    ",
-							"    if (pw != null && pw.length == 0)",
-							"        tests[\"Your `pw` is empty. Please update your environment.\"] = 0",
+							"    tests[\"Invalid user/password.\"] = 0",
 							"        ",
 							"    postman.clearEnvironmentVariable(\"pw3\")",
 							"    postman.clearEnvironmentVariable(\"session\");",
 							"    if (s != null) {",
 							"        postman.setEnvironmentVariable(\"pw\", \"\");",
 							"    }",
-                          "    postman.setNextRequest(null)",
+							"    postman.setNextRequest(null)",
 							"    ",
 							"} else {",
 							"    tests[\"Logged in successfully.\"] = 1",
@@ -123,12 +118,13 @@
 							"}",
 							"",
 							"s = postman.getEnvironmentVariable(\"session\")",
+							"ns = postman.getEnvironmentVariable(\"nSession\")",
 							"pw = postman.getEnvironmentVariable(\"pw\")",
 							"u = postman.getEnvironmentVariable(\"user\")",
-							"if (pw != null) postman.setEnvironmentVariable(\"pw3\", pw)",
-							"else if (s != null) ",
-							"    postman.setEnvironmentVariable(\"pw3\", ",
-							"    decodeURIComponent(window.atob(s)).slice(u.length))",
+							"if (s && typeof window !== \"undefined\") pw = decodeURIComponent(window.atob(s)).slice(u.length);",
+							"if (ns) pw = decodeURIComponent(ns).slice(u.length);",
+							"",
+							"postman.setEnvironmentVariable(\"pw3\", pw)",
 							"    "
 						]
 					}
@@ -136,15 +132,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/login.php?actionID=chkAuthentication&hdnUserTimeZoneOffset=8&txtUserName={{user}}&txtPassword={{pw3}}",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/login.php?actionID=chkAuthentication&hdnUserTimeZoneOffset=8&txtUserName={{user}}&txtPassword={{pw3}}",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"login.php"
 					],
 					"query": [
@@ -248,7 +240,7 @@
 							"    ",
 							"} else if (resolvedCnt > 1){",
 							"    // more than 1 record",
-							"    tests[ resolvedCnt + \" projects found with '\" + project + \"'\"] = 0",
+							"    tests[ resolvedCnt + \" projects found with '\" + project + \"'\"] = 0 ",
 							"    tests[\"Modify 'project' env var to match 1 record only.\"] = 0",
 							"    tests[\"Matching projects:\"] = 0",
 							"    i = 0",
@@ -282,15 +274,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=View_Edit_Timesheet&id=1",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=View_Edit_Timesheet&id=1",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -366,15 +354,16 @@
 							"    tests[\"Matching activities:\"] = 0",
 							"    i = 0",
 							"    ",
-							"    values = Object.values(actMap)",
+							"    values = Object.values(actMap).sort()",
 							"    for (var p in values){",
-							"        if (++i > 10){",
-							"            tests[\"(only first ten activities displayed here)\"] = 0",
+							"        if (++i > 20){",
+							"            tests[\"(only first 20 activities displayed here)\"] = 0",
 							"            break;",
 							"        }",
 							"        tests[\">> \" + values[p]] = 0",
 							"    }",
 							"    postman.setNextRequest(\"Logout\")",
+							"    ",
 							"} else if (resolvedCnt == 1){",
 							"    // only 1 record, proceed to get HK holiday",
 							"    var k = Object.keys(actMap)[0]",
@@ -395,15 +384,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=Timegrid_Fetch_Activities&projectId={{projectId}}",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Timegrid_Fetch_Activities&projectId={{projectId}}",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -620,15 +605,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=Fetch_Next_Timesheet&txtEmployeeId={{employeeId}}&txtTimesheetId={{timesheetId}}",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Fetch_Next_Timesheet&txtEmployeeId={{employeeId}}&txtTimesheetId={{timesheetId}}",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -804,15 +785,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=Update_Timeesheet_Grid",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Update_Timeesheet_Grid",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -1220,15 +1197,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=Submit_Timesheet",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Submit_Timesheet",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -1379,15 +1352,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/lib/controllers/CentralController.php?timecode=Time&action=View_Timesheet&id={{timesheetId}}",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=View_Timesheet&id={{timesheetId}}",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"lib",
 						"controllers",
 						"CentralController.php"
@@ -1462,15 +1431,11 @@
 			],
 			"request": {
 				"url": {
-					"raw": "http://office.qualicom-asia.com/orangehrm/index.php?ACT=logout",
-					"protocol": "http",
+					"raw": "{{HRM_HOST}}/index.php?ACT=logout",
 					"host": [
-						"office",
-						"qualicom-asia",
-						"com"
+						"{{HRM_HOST}}"
 					],
 					"path": [
-						"orangehrm",
 						"index.php"
 					],
 					"query": [
