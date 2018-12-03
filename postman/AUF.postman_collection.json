@@ -605,7 +605,7 @@
 			],
 			"request": {
 				"url": {
-					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Fetch_Next_Timesheet&txtEmployeeId={{employeeId}}&txtTimesheetId={{timesheetId}}",
+					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Fetch_Next_Timesheet&txtEmployeeId={{employeeId}}",
 					"host": [
 						"{{HRM_HOST}}"
 					],
@@ -630,12 +630,6 @@
 						{
 							"key": "txtEmployeeId",
 							"value": "{{employeeId}}",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "txtTimesheetId",
-							"value": "{{timesheetId}}",
 							"equals": true,
 							"description": ""
 						}
