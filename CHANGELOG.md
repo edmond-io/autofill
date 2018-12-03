@@ -2,7 +2,7 @@
 
 ## [1.1.2] - 20181203
 ### Changed
-- Fixed "No next timesheet error"
+- Fixed "[Fetch_Next_Timesheet] Fail to fetch." error due to timezone difference
 
 ## [1.1.1] - 20181202
 ### Changed
