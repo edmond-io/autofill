@@ -33,11 +33,16 @@ let envObj = {
 
 
 function runNewman(userName) {
+    let reporters = ["console"];
+
+    // debug mode show log
+    if (process.env.NODE_ENV === "DEV") {
+        reporters.push("json", "html")
+    }
+
     return newman.run({
         collection: require('../postman/AUF.postman_collection.json'),
-        reporters: [
-            "console"
-        ],
+        reporters: reporters,
         reporter: {
             "console": {
                 userName: userName

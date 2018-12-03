@@ -1,6 +1,6 @@
 {
   "name": "autofill",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "homepage": "https://qcom.herokuapp.com/",
   "description": "This tool helps you auto-fill annonying timesheet in orangeHRM. It supports searching project and activity by name.",
   "main": "app.js",
@@ -19,8 +19,7 @@
     "marked": "^0.5.2",
     "newman": "^4.2.2",
     "newman-reporter-console": "file:newman-reporter-console",
-    "newman-reporter-html": "^1.0.2",
-    "newman-reporter-json-light": "^1.0.7",
+    "serve-index": "^1.9.1",
     "socket.io": "^2.1.1"
   },
   "engines": {

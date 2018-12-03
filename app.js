@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const serveIndex = require('serve-index')
 const app = express();
 
 
@@ -40,6 +41,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.use('/', index);
 app.use('/run', autofill);
 app.use('/changelog', changelog);
+app.use('/history', serveIndex(path.join(__dirname, 'newman')));
 app.use('/history', express.static(path.join(__dirname, 'newman')));
 app.use('/static', express.static(path.join(__dirname, 'client')));
 

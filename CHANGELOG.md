@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.1.2] - 20181203
+### Changed
+- Fixed "No next timesheet error"
+
 ## [1.1.1] - 20181202
 ### Changed
 - Fixed timestamp issue
