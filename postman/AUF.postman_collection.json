@@ -503,6 +503,8 @@
 							"expectedDateShown = new Date(txtEndDate)",
 							"expectedDateShown.setDate(expectedDateShown.getDate() + 3)",
 							"cp = responseBody.has(expectedDateShown.toISOString().slice(0, 10))",
+                          "tests[expectedDateShown.toISOString().slice(0, 10)] = 1",
+                          "tests[responseBody] = 0",
 							"if (!cp){",
 							"    console.log(\"[FetchNextTimesheet]\", \"too far away, lead to logout now..\")",
 							"    tests[\"Fail to fetch. Are you trying to fill a month too far away?\"]=0",
