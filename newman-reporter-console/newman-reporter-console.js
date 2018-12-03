@@ -12,7 +12,7 @@ module.exports = function(newman, reporterOptions) {
     // newman.on('beforeRequest', (err, o) => { });
 
     newman.on('request', function(err, o){
-        send(`URL PATH: /${o.item.request.url.path.join('/')}`, userName);
+        // send(`URL PATH: /${o.item.request.url.path.join('/')}`, userName);
     });
 
     // newman.on('script', (err, o) => {} );
