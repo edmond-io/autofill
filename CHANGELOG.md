@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [1.1.3] - 20181208
+### Added
+- Health check page `/healthcheck`
+### Changed
+- Change Log show top 5 updates only
+
 ## [1.1.2] - 20181203
 ### Changed
 - Fixed "[Fetch_Next_Timesheet] Fail to fetch." error due to timezone difference

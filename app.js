@@ -38,6 +38,7 @@ server.listen(process.env.PORT, function () {
 
 // routes
 app.use(express.static(path.join(__dirname, 'client')));
+app.get('/healthcheck', (req, res) => res.send("OK"));
 app.use('/', index);
 app.use('/run', autofill);
 app.use('/changelog', changelog);
