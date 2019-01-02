@@ -80,7 +80,7 @@ io.on('connection', function (socket) {
     });
 });
 
-eventEmitter.on('logging', function (message, clz, user) {
+eventEmitter.on('logging', function (action, message, clz, user) {
     if (user) {
         let socketId;
         for (let i = 0; i < users.length; i++) {
@@ -89,13 +89,13 @@ eventEmitter.on('logging', function (message, clz, user) {
             }
         }
 
-        io.to(socketId).emit('log_message', {
+        io.to(socketId).emit(action, {
             data: message,
             class: clz
         });
 
     } else {
-        io.emit('log_message', {
+        io.emit(action, {
             data: message,
             class: clz
         });
@@ -113,7 +113,7 @@ app.all('*', function (req, res) {
 originConsoleLog = console.log;
 originConsoleErr = console.error;
 
-if (process.env.NODE_ENV === 'DEV') {
+if (process.env.NODE_ENV === 'development') {
 
     // Override console.log
     console.log = function (data) {
@@ -127,12 +127,17 @@ if (process.env.NODE_ENV === 'DEV') {
     };
 }
 
-send = function (data, userName) {
-    eventEmitter.emit('logging', data, null, userName);
-    originConsoleLog(data);
+send = function (data, userName, clazz) {
+    eventEmitter.emit('logging', 'log_message', data, clazz, userName);
+    if (process.env.NODE_ENV === 'development') originConsoleLog(data);
 };
 
-sendErr = function (data, userName) {
-    eventEmitter.emit('logging', data, "red-text", userName);
+sendErr = function (data, userName, clazz) {
+    eventEmitter.emit('logging', 'log_message', data, "red-text " + clazz, userName);
     originConsoleErr(data);
+};
+
+toast = function (data, userName, clazz) {
+    eventEmitter.emit('logging', 'toast', data, clazz, userName);
+    if (process.env.NODE_ENV === 'development') originConsoleLog("TOAST: " + data);
 };

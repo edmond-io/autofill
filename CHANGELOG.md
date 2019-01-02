@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [1.2.0] - 20181208
+### Added
+- Click on project / activity
+### Changed
+- List all projects and activities
+### Fixed
+- Cross-year regarded as pre-fill bug
+
+## [1.1.4] - 20181208
+### Changed
+- Upgrade Postman schema to v2.1.0
+
 ## [1.1.3] - 20181208
 ### Added
 - Health check page `/healthcheck`

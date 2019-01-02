@@ -1,7 +1,6 @@
 let express = require('express')
 let router = express.Router();
 let newman = require('newman');
-let atob = require('atob');
 
 // load environment variables
 require('dotenv').config();
@@ -13,7 +12,7 @@ let envObj = {
             "key": "user",
         },
         {
-            "key": "nSession",
+            "key": "session",
         },
         {
             "key": "month",
@@ -35,11 +34,6 @@ let envObj = {
 function runNewman(userName) {
     let reporters = ["console"];
 
-    // debug mode show log
-    if (process.env.NODE_ENV === "DEV") {
-        reporters.push("json", "html")
-    }
-
     return newman.run({
         collection: require('../postman/AUF.postman_collection.json'),
         reporters: reporters,
@@ -48,16 +42,65 @@ function runNewman(userName) {
                 userName: userName
             }
         },
-        environment: envObj
+        environment: envObj,
+        // abortOnError: true, // check syntax
+        // abortOnFailure: false // let the scripts logout
+
     }).on('start', function (err, args){
         send('running the script...', userName);
 
+    }).on('assertion', function (err, args) {
+        let requestId = args.item.name,
+            message = args.assertion,
+            isPass = args.error === null;
+
+        // customize message
+        switch (requestId) {
+            case 'Validate_Activity':
+                if (message.indexOf(">> ") >= 0) {
+                    let activity = message.slice(3);
+                    message = `>> <a data-activity='${activity}' href="#">${activity}</a>`;
+                }
+                break;
+
+            case 'Validate_Project':
+                if (message.indexOf(">> ") >= 0) {
+                    let projName = message.slice(3);
+                    message = `>> <a data-project='${projName}' href="#">${projName}</a>`;
+                }
+                break;
+
+        }
+
+        if (isPass)
+            send(`[${requestId}] ${message}`, userName);
+        else
+            sendErr(`[${requestId}] ${message}`, userName);
+
     }).on('done', function (err, summary){
-        if (err || summary.error) {
-            sendErr('collection run encountered an error.' + err, userName);
+        if (summary.error) {
+            if (process.env.NODE_ENV === 'development') {
+                err.stack.split(" at").forEach((line) => {
+                    sendErr(`at ${line}`, userName);
+                })
+            } else
+                sendErr(summary.error.name);
+
             return;
         }
 
+        let runStatus = summary.environment.values.filter(obj => obj.key === "STATUS").map(obj => obj.value).pop();
+        if (runStatus) {
+            try {
+                runStatus = JSON.parse(runStatus);
+                let obj = (process.env.NODE_ENV === 'development') ? runStatus : runStatus.msg;
+                toast(obj, userName);
+            } catch (err) {
+                sendErr(`Err: ${runStatus}`, userName);
+            }
+
+
+        }
         send(`Completed in ${summary.run.timings.completed - summary.run.timings.started} ms.`, userName);
     });
 }
@@ -69,9 +112,8 @@ router.post('/', function (req, res) {
         return;
     }
 
-    let newmanSession = atob(req.body.session)
     envObj.values[0].value = req.body.user;
-    envObj.values[1].value = newmanSession;
+    envObj.values[1].value = req.body.session;
     envObj.values[2].value = req.body.month;
     envObj.values[3].value = req.body.activity;
     envObj.values[4].value = req.body.project;

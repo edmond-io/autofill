@@ -18,15 +18,15 @@ module.exports = function(newman, reporterOptions) {
     // newman.on('script', (err, o) => {} );
 
     newman.on('assertion', (err, o) => {
-        if (err) {
-            sendErr(`[${o.item.name}]: ${o.assertion}`, userName);
-
-        } else {
-            send(`[${o.item.name}]: ${o.assertion}`, userName);
-
-        }
-
-        this.assertionCount++;
+        // if (err) {
+        //     sendErr(`[${o.item.name}]: ${o.assertion}`, userName);
+        //
+        // } else {
+        //     send(`[${o.item.name}]: ${o.assertion}`, userName);
+        //
+        // }
+        //
+        // this.assertionCount++;
     });
 
     newman.on('beforeDone', function(err) {

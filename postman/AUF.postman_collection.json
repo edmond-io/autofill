@@ -1,19 +1,60 @@
 {
-	"variables": [],
 	"info": {
-		"name": "AUF",
 		"_postman_id": "11474d5a-c051-bffc-7f3a-7d54432fbb58",
+      "name": "AUF",
 		"description": "# Auto Fill OrangeHRM Timesheet\nThis tool helps you **auto-fill** ~~annonying~~ **timesheet** in orangeHRM. It supports searching project and activity by name. Most importantly, it fills **public holiday** for you. Follow the instruction to setup and you are set free!\n\n## Instructions:\n\n### 1. Update environment variables\n\n<table>\n<tr>\n\t<th>Variable</th>\n\t<th>Description</th>\n\t<th>Example</th>\n</tr>\n<tr>\n\t<td>user</td>\n\t<td><code>string</code> Your login id</td>\n\t<td>eason.chan</td>\n</tr>\n<tr>\n\t<td>pw</td>\n\t<td><code>string</code> Your password. would be deleted after login</td>\n\t<td>passw0rd</td>\n</tr>\n<tr>\n\t<td>month</td>\n\t<td><code>integer</code> 1 to 12</td>\n\t<td>11</td>\n</tr>\n<tr>\n\t<td>project</td>\n\t<td><code>string</code> Project name, will read as RegExp for case-insensitive search</td>\n\t<td>hactl.*lcs</td>\n</tr>\n<tr>\n\t<td>activity</td>\n\t<td><code>string</code> Activity name, will read as RegExp for case-insensitive search</td>\n\t<td>bug fix</td>\n</tr>\n<tr>\n\t<td>session</td>\n\t<td><code>auto-generated</code> Your session</td>\n\t<td>N/A</td>\n</tr>\n<tr>\n\t<td>HRM_HOST</td>\n\t<td><code>string</code> URL to the orangehrm</td>\n\t<td>http://www.xxx.com/orangehrm</td>\n</tr>\n</table>\n\n\n### 2. Click Run for this collection\n- Environment: choose the one you setup\n\n### 3. Enjoy\n- Note that submitted timesheet would be skipped\n- For private use only",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Login",
 			"event": [
 				{
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "21c94148-cffe-4550-b947-5104d006d34e",
+                    "exec": [
+                      "var Base64={_keyStr:\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\",e:function(e){var t=\"\";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},d:function(e){var t=\"\";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\\+\\/\\=]/g,\"\");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\\r\\n/g,\"n\");var t=\"\";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t=\"\";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}",
+                      "",
+                      "// wipe working env variable.",
+                      "postman.clearEnvironmentVariable(\"token\");",
+                      "postman.clearEnvironmentVariable(\"txtStartDate\");",
+                      "postman.clearEnvironmentVariable(\"txtEndDate\");",
+                      "postman.clearEnvironmentVariable(\"timesheetIds\");",
+                      "postman.clearEnvironmentVariable(\"timesheetId\");",
+                      "postman.clearEnvironmentVariable(\"employeeId\");",
+                      "postman.clearEnvironmentVariable(\"holidayList\");",
+                      "postman.clearEnvironmentVariable(\"projectId\");",
+                      "postman.clearEnvironmentVariable(\"activityId\");",
+                      "postman.clearEnvironmentVariable(\"hdnGridCount\");",
+                      "postman.clearEnvironmentVariable(\"pw3\");",
+                      "postman.clearEnvironmentVariable(\"verifyList\");",
+                      "postman.clearEnvironmentVariable(\"STATUS\");",
+                      "",
+                      "for (var i=0; i<=6; i++){",
+                      "    postman.clearEnvironmentVariable(\"hdnReportedDate\" + i);",
+                      "    postman.clearEnvironmentVariable(\"duration0\" + i);",
+                      "    postman.clearEnvironmentVariable(\"duration1\" + i);",
+                      "    postman.clearEnvironmentVariable(\"cmbActivity\" + i);",
+                      "    postman.clearEnvironmentVariable(\"cmbProject\" + i);",
+                      "}",
+                      "",
+                      "s = postman.getEnvironmentVariable(\"session\")",
+                      "ns = postman.getEnvironmentVariable(\"nSession\")",
+                      "pw = postman.getEnvironmentVariable(\"pw\")",
+                      "u = postman.getEnvironmentVariable(\"user\")",
+                      "",
+                      "if (s) pw = decodeURIComponent(Base64.d(s)).slice(u.length);",
+                      "postman.setEnvironmentVariable(\"pw3\", pw)",
+                      "    "
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+              {
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
+                      "id": "d2cacc41-4830-4eae-b14a-db4ace182f50",
 						"exec": [
 							"var pw = postman.getEnvironmentVariable(\"pw\")",
 							"var pw3 = postman.getEnvironmentVariable(\"pw3\")",
@@ -21,6 +62,8 @@
 							"var month = postman.getEnvironmentVariable(\"month\")",
 							"isLoggedIn = responseBody.has(\"Welcome \")",
 							"",
+                          "var Base64={_keyStr:\"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\",e:function(e){var t=\"\";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},d:function(e){var t=\"\";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\\+\\/\\=]/g,\"\");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\\r\\n/g,\"n\");var t=\"\";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t=\"\";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}",
+                          "",
 							"if (!month",
 							"        || !postman.getEnvironmentVariable(\"user\")",
 							"        || !pw3){",
@@ -35,6 +78,7 @@
 							"    ",
 							"} else if (!isLoggedIn){",
 							"    tests[\"Invalid user/password.\"] = 0",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"A10\", msg: \"Invalid user / password.\"}))",
 							"        ",
 							"    postman.clearEnvironmentVariable(\"pw3\")",
 							"    postman.clearEnvironmentVariable(\"session\");",
@@ -52,6 +96,13 @@
 							"    ",
 							"    date = new Date()",
 							"    date.setUTCHours(8,0,0,0)",
+                          "    ",
+                          "    // if it is Janurary and filling for last Decemeber",
+                          "    // Put last year",
+                          "    if (date.getMonth() == 0 && month == 12){",
+                          "        date.setFullYear(date.getFullYear() - 1);",
+                          "    }",
+                          "    ",
 							"    date.setMonth(month - 1)",
 							"    dateString = date.toISOString().slice(0, 7)",
 							"    tests[\"Welcome, \" + yourName + \"!\"] = 1",
@@ -83,93 +134,19 @@
 							"    prevSunday = prevSunday.toISOString().slice(0, 10)",
 							"    ",
 							"    postman.setEnvironmentVariable(\"txtEndDate\", prevSunday)",
-							"    postman.setEnvironmentVariable(\"session\", window.btoa(encodeURIComponent(u+pw3)))",
+                          "    postman.setEnvironmentVariable(\"session\", Base64.e(encodeURIComponent(u+pw3)))",
 							"    postman.clearEnvironmentVariable(\"pw\")",
 							"    postman.clearEnvironmentVariable(\"pw3\");",
 							"    console.log(\"[Login] Prearing txtEndDate:\", prevSunday)",
 							"    ",
 							"    postman.setNextRequest(\"Validate_Project\")",
 							"}"
-						]
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"// wipe working env variable.",
-							"postman.clearEnvironmentVariable(\"token\");",
-							"postman.clearEnvironmentVariable(\"txtStartDate\");",
-							"postman.clearEnvironmentVariable(\"txtEndDate\");",
-							"postman.clearEnvironmentVariable(\"timesheetIds\");",
-							"postman.clearEnvironmentVariable(\"timesheetId\");",
-							"postman.clearEnvironmentVariable(\"employeeId\");",
-							"postman.clearEnvironmentVariable(\"holidayList\");",
-							"postman.clearEnvironmentVariable(\"projectId\");",
-							"postman.clearEnvironmentVariable(\"activityId\");",
-							"postman.clearEnvironmentVariable(\"hdnGridCount\");",
-							"postman.clearEnvironmentVariable(\"pw3\");",
-							"postman.clearEnvironmentVariable(\"verifyList\");",
-							"",
-							"for (var i=0; i<=6; i++){",
-							"    postman.clearEnvironmentVariable(\"hdnReportedDate\" + i);",
-							"    postman.clearEnvironmentVariable(\"duration0\" + i);",
-							"    postman.clearEnvironmentVariable(\"duration1\" + i);",
-							"    postman.clearEnvironmentVariable(\"cmbActivity\" + i);",
-							"    postman.clearEnvironmentVariable(\"cmbProject\" + i);",
-							"}",
-							"",
-							"s = postman.getEnvironmentVariable(\"session\")",
-							"ns = postman.getEnvironmentVariable(\"nSession\")",
-							"pw = postman.getEnvironmentVariable(\"pw\")",
-							"u = postman.getEnvironmentVariable(\"user\")",
-							"if (s && typeof window !== \"undefined\") pw = decodeURIComponent(window.atob(s)).slice(u.length);",
-							"if (ns) pw = decodeURIComponent(ns).slice(u.length);",
-							"",
-							"postman.setEnvironmentVariable(\"pw3\", pw)",
-							"    "
-						]
+                        ],
+                      "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
-				"url": {
-					"raw": "{{HRM_HOST}}/login.php?actionID=chkAuthentication&hdnUserTimeZoneOffset=8&txtUserName={{user}}&txtPassword={{pw3}}",
-					"host": [
-						"{{HRM_HOST}}"
-					],
-					"path": [
-						"login.php"
-					],
-					"query": [
-						{
-							"key": "actionID",
-							"value": "chkAuthentication",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "hdnUserTimeZoneOffset",
-							"value": "8",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "txtUserName",
-							"value": "{{user}}",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "txtPassword",
-							"value": "{{pw3}}",
-							"equals": true,
-							"description": ""
-						}
-					],
-					"variable": []
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -178,26 +155,49 @@
 						{
 							"key": "actionID",
 							"value": "chkAuthentication",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnUserTimeZoneOffset",
 							"value": "8",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtUserName",
 							"value": "{{user}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtPassword",
 							"value": "{{pw3}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
+                        }
+                    ]
+                },
+              "url": {
+                "raw": "{{HRM_HOST}}/login.php?actionID=chkAuthentication&hdnUserTimeZoneOffset=8&txtUserName={{user}}&txtPassword={{pw3}}",
+                "host": [
+                  "{{HRM_HOST}}"
+                ],
+                "path": [
+                  "login.php"
+                ],
+                "query": [
+                  {
+                    "key": "actionID",
+                    "value": "chkAuthentication"
+                  },
+                  {
+                    "key": "hdnUserTimeZoneOffset",
+                    "value": "8"
+                  },
+                  {
+                    "key": "txtUserName",
+                    "value": "{{user}}"
+                  },
+                  {
+                    "key": "txtPassword",
+                    "value": "{{pw3}}"
 						}
 					]
 				},
@@ -211,7 +211,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
+                      "id": "dc84bdc1-3ba1-4306-a567-9cf582da4028",
 						"exec": [
 							"// Validate Input",
 							"var project = postman.getEnvironmentVariable(\"project\")",
@@ -248,14 +248,15 @@
 							"    tests[\"Matching projects:\"] = 0",
 							"    i = 0",
 							"    ",
-							"    values = Object.values(projectsMap)",
+                          "    values = Object.values(projectsMap).sort()",
 							"    for (var p in values){",
-							"        if (++i > 10){",
-							"            tests[\"(only first ten projects displayed here)\"] = 0",
+                          "        if (++i > 150){",
+                          "            tests[\"(only first 150 projects displayed here)\"] = 0",
 							"            break;",
 							"        }",
 							"        tests[\">> \" + values[p]] = 0",
 							"    }",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"B20\", msg: resolvedCnt + \" projects found. Please choose one of them.\"}))",
 							"    postman.setNextRequest(\"Logout\")",
 							"} else if (resolvedCnt == 1){",
 							"    // only 1 record",
@@ -271,11 +272,18 @@
 							"    tests[\"Unknow err\"] = 0",
 							"    postman.setNextRequest(null)",
 							"}"
-						]
+                        ],
+                      "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": ""
+              },
 				"url": {
 					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=View_Edit_Timesheet&id=1",
 					"host": [
@@ -289,30 +297,17 @@
 					"query": [
 						{
 							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
+                          "value": "Time"
 						},
 						{
 							"key": "action",
-							"value": "View_Edit_Timesheet",
-							"equals": true,
-							"description": ""
+                          "value": "View_Edit_Timesheet"
 						},
 						{
 							"key": "id",
-							"value": "1",
-							"equals": true,
-							"description": ""
+                          "value": "1"
 						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+                    ]
 				},
 				"description": "- Search any projects can be found with `project`\n- Produce `projectId` working variable"
 			},
@@ -324,7 +319,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
+                      "id": "23c26b5b-7ca1-4684-83ce-4a0fcd2e273e",
 						"exec": [
 							"var activity = postman.getEnvironmentVariable(\"activity\")",
 							"actRegex = new RegExp(activity, \"i\")",
@@ -348,6 +343,7 @@
 							"if (resolvedCnt == 0){",
 							"    // Sorry, no activities can be found.",
 							"    tests[\"No activities found with '\" + activity + \"'\"] = 0",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"C20\", msg: \"Sorry, no activities found.\"}))",
 							"    postman.setNextRequest(\"Logout\")",
 							"    ",
 							"} else if (resolvedCnt > 1){",
@@ -365,6 +361,7 @@
 							"        }",
 							"        tests[\">> \" + values[p]] = 0",
 							"    }",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"C21\", msg: resolvedCnt + \" activities found. Please choose 1.\"}))",
 							"    postman.setNextRequest(\"Logout\")",
 							"    ",
 							"} else if (resolvedCnt == 1){",
@@ -381,11 +378,18 @@
 							"    tests[\"Unknow err\"] = 0",
 							"    postman.setNextRequest(null)",
 							"}"
-						]
+                        ],
+                      "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": ""
+              },
 				"url": {
 					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Timegrid_Fetch_Activities&projectId={{projectId}}",
 					"host": [
@@ -399,30 +403,17 @@
 					"query": [
 						{
 							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
+                          "value": "Time"
 						},
 						{
 							"key": "action",
-							"value": "Timegrid_Fetch_Activities",
-							"equals": true,
-							"description": ""
+                          "value": "Timegrid_Fetch_Activities"
 						},
 						{
 							"key": "projectId",
-							"value": "{{projectId}}",
-							"equals": true,
-							"description": ""
+                          "value": "{{projectId}}"
 						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+                    ]
 				},
 				"description": "- Search any `activity` can be found within the project\n- Produce `activityId` working variable"
 			},
@@ -479,13 +470,27 @@
 				}
 			],
 			"request": {
-				"url": "http://www.1823.gov.hk/common/ical/tc.ics",
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
+              "url": {
+                "raw": "http://www.1823.gov.hk/common/ical/tc.ics",
+                "protocol": "http",
+                "host": [
+                  "www",
+                  "1823",
+                  "gov",
+                  "hk"
+                ],
+                "path": [
+                  "common",
+                  "ical",
+                  "tc.ics"
+                ]
+              },
 				"description": "- Get HK holiday for the month and the month after it\n- Produce `holidayList` working variable"
 			},
 			"response": []
@@ -494,9 +499,29 @@
 			"name": "Fetch_Next_Timesheet",
 			"event": [
 				{
+                  "listen": "prerequest",
+                  "script": {
+                    "id": "a40f1ba3-a459-48a6-ac92-39a941b7870a",
+                    "exec": [
+                      "var txtEndDate = postman.getEnvironmentVariable(\"txtEndDate\")",
+                      "",
+                      "// C0. Iternate txtEndDate",
+                      "var d = new Date(txtEndDate)",
+                      "d.setDate(d.getDate() + 7)",
+                      "d.setUTCHours(8,0,0,0)",
+                      "var nextSunday = d.toISOString().slice(0, 10);",
+                      "",
+                      "postman.setEnvironmentVariable(\"txtStartDate\", txtEndDate)",
+                      "postman.setEnvironmentVariable(\"txtEndDate\", nextSunday)",
+                      ""
+                    ],
+                    "type": "text/javascript"
+                  }
+                },
+              {
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
+                      "id": "52771fae-970f-419f-a986-0c989ee25242",
 						"exec": [
 							"var timesheetIds = postman.getEnvironmentVariable(\"timesheetIds\"),",
 							"    txtStartDate = postman.getEnvironmentVariable(\"txtStartDate\"),",
@@ -512,6 +537,7 @@
 							"if (!cp){",
 							"    console.log(\"[FetchNextTimesheet]\", \"too far away, lead to logout now..\")",
 							"    tests[\"Fail to fetch. Are you trying to fill a month too far away?\"]=0",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"E10\", msg: \"Fail to fetch timesheet.\"}))",
 							"    postman.setNextRequest(\"Logout\")",
 							"    ",
 							"} else {",
@@ -587,30 +613,34 @@
 							"}",
 							"",
 							""
-						]
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var txtEndDate = postman.getEnvironmentVariable(\"txtEndDate\")",
-							"",
-							"// C0. Iternate txtEndDate",
-							"var d = new Date(txtEndDate)",
-							"d.setDate(d.getDate() + 7)",
-							"d.setUTCHours(8,0,0,0)",
-							"var nextSunday = d.toISOString().slice(0, 10);",
-							"",
-							"postman.setEnvironmentVariable(\"txtStartDate\", txtEndDate)",
-							"postman.setEnvironmentVariable(\"txtEndDate\", nextSunday)",
-							""
-						]
+                        ],
+                      "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/x-www-form-urlencoded"
+                }
+              ],
+              "body": {
+                "mode": "urlencoded",
+                "urlencoded": [
+                  {
+                    "key": "txtStartDate",
+                    "value": "{{txtStartDate}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "txtEndDate",
+                    "value": "{{txtEndDate}}",
+                    "type": "text"
+                  }
+                ]
+              },
 				"url": {
 					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Fetch_Next_Timesheet&txtEmployeeId={{employeeId}}",
 					"host": [
@@ -624,47 +654,15 @@
 					"query": [
 						{
 							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
+                          "value": "Time"
 						},
 						{
 							"key": "action",
-							"value": "Fetch_Next_Timesheet",
-							"equals": true,
-							"description": ""
+                          "value": "Fetch_Next_Timesheet"
 						},
 						{
 							"key": "txtEmployeeId",
-							"value": "{{employeeId}}",
-							"equals": true,
-							"description": ""
-						}
-					],
-					"variable": []
-				},
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "txtStartDate",
-							"value": "{{txtStartDate}}",
-							"type": "text",
-							"description": ""
-						},
-						{
-							"key": "txtEndDate",
-							"value": "{{txtEndDate}}",
-							"type": "text",
-							"description": ""
+                          "value": "{{employeeId}}"
 						}
 					]
 				},
@@ -676,45 +674,9 @@
 			"name": "Update_Timesheet_Grid",
 			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var txtStartDate = postman.getEnvironmentVariable(\"txtStartDate\")",
-							"var timesheetIds = postman.getEnvironmentVariable(\"timesheetIds\")",
-							"",
-							"// D0. Renew Token",
-							"if (responseBody.has(\"Failed to update\")){",
-							"    // capture token and replay",
-							"    regex = /value=\"([\\d\\w]+)\" name=\"token\"/",
-							"    match = regex.exec(responseBody)",
-							"    token = match[1]",
-							"    ",
-							"    console.log(\"[UpdateTimesheetGrid] get token:\", token)",
-							"    tests[\"Get Token: \" + token] = true",
-							"    postman.setEnvironmentVariable(\"token\", token)",
-							"    postman.setNextRequest(\"Update_Timesheet_Grid\") // retry",
-							"    ",
-							"} else if (responseBody.has(\"Successfully updated\")){",
-							"    tests[\"Auto filled for week: \" + txtStartDate] = 1",
-							"    ",
-							"    // D3. submit the timesheet",
-							"    postman.setEnvironmentVariable(\"token\", null)",
-							"    postman.setNextRequest(\"Submit_Timesheet\")",
-							"",
-							"} else {",
-							"    tests[\"D3. Huh? Please contact system administrator.\"] = 0;",
-							"    postman.setNextRequest(\"Logout\")",
-							"}",
-							"",
-							""
-						]
-					}
-				},
-				{
 					"listen": "prerequest",
 					"script": {
-						"type": "text/javascript",
+                      "id": "cf6d809d-bd3c-4ef7-af57-f16e2e95428f",
 						"exec": [
 							"var timesheetIds = postman.getEnvironmentVariable(\"timesheetIds\")",
 							"var token = postman.getEnvironmentVariable(\"token\")",
@@ -781,48 +743,59 @@
 							"}",
 							"",
 							""
-						]
+                        ],
+                      "type": "text/javascript"
+                    }
+                },
+              {
+                "listen": "test",
+                "script": {
+                  "id": "8fdb1cef-a55f-4387-857a-818e37ace768",
+                  "exec": [
+                    "var txtStartDate = postman.getEnvironmentVariable(\"txtStartDate\")",
+                    "var timesheetIds = postman.getEnvironmentVariable(\"timesheetIds\")",
+                    "",
+                    "// D0. Renew Token",
+                    "if (responseBody.has(\"Failed to update\")){",
+                    "    // capture token and replay",
+                    "    regex = /value=\"([\\d\\w]+)\" name=\"token\"/",
+                    "    match = regex.exec(responseBody)",
+                    "    token = match[1]",
+                    "    ",
+                    "    console.log(\"[UpdateTimesheetGrid] get token:\", token)",
+                    "    tests[\"Get Token: \" + token] = true",
+                    "    postman.setEnvironmentVariable(\"token\", token)",
+                    "    postman.setNextRequest(\"Update_Timesheet_Grid\") // retry",
+                    "    ",
+                    "} else if (responseBody.has(\"Successfully updated\")){",
+                    "    tests[\"Auto filled for week: \" + txtStartDate] = 1",
+                    "    ",
+                    "    // D3. submit the timesheet",
+                    "    postman.setEnvironmentVariable(\"token\", null)",
+                    "    postman.setNextRequest(\"Submit_Timesheet\")",
+                    "",
+                    "} else {",
+                    "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"F10\", msg: \"Error - F10\"}))",
+                    "    tests[\"D3. Huh? Please contact system administrator.\"] = 0;",
+                    "    postman.setNextRequest(\"Logout\")",
+                    "}",
+                    "",
+                    ""
+                  ],
+                  "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
-				"url": {
-					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Update_Timeesheet_Grid",
-					"host": [
-						"{{HRM_HOST}}"
-					],
-					"path": [
-						"lib",
-						"controllers",
-						"CentralController.php"
-					],
-					"query": [
-						{
-							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "action",
-							"value": "Update_Timeesheet_Grid",
-							"equals": true,
-							"description": ""
-						}
-					],
-					"variable": []
-				},
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
+                      "value": "application/x-www-form-urlencoded"
 					},
 					{
 						"key": "Upgrade-Insecure-Requests",
 						"value": "1",
-						"description": "",
 						"disabled": true
 					}
 				],
@@ -832,287 +805,261 @@
 						{
 							"key": "token",
 							"value": "{{token}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-0",
 							"value": "{{hdnReportedDate0}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-1",
 							"value": "{{hdnReportedDate1}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-2",
 							"value": "{{hdnReportedDate2}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-3",
 							"value": "{{hdnReportedDate3}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-4",
 							"value": "{{hdnReportedDate4}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-5",
 							"value": "{{hdnReportedDate5}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnReportedDate-6",
 							"value": "{{hdnReportedDate6}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "cmbProject-0",
 							"value": "{{cmbProject0}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "cmbActivity-0",
 							"value": "{{cmbActivity0}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-0",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-0",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-1",
 							"value": "{{duration01}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-1",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-2",
 							"value": "{{duration02}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-2",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-3",
 							"value": "{{duration03}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-3",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-4",
 							"value": "{{duration04}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-4",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-5",
 							"value": "{{duration05}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-5",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-0-6",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtComment-0-6",
 							"value": "",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtEmployeeId",
 							"value": "{{employeeId}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtTimesheetId",
 							"value": "{{timesheetId}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtStartDate",
 							"value": "{{txtStartDate}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtEndDate",
 							"value": "{{txtEndDate}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnGridCount",
 							"value": "{{hdnGridCount}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnDatesCount",
 							"value": "7",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "hdnShowComments",
 							"value": "No",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtDuration-1-1",
 							"value": "{{duration11}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-2",
 							"value": "{{duration12}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-3",
 							"value": "{{duration13}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-4",
 							"value": "{{duration14}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-5",
 							"value": "{{duration15}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "cmbProject-1",
 							"value": "{{cmbProject1}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "cmbActivity-1",
 							"value": "{{cmbActivity1}}",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-1",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-2",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-0",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-3",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-4",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-5",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtComment-1-6",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-0",
 							"value": "",
-							"description": "",
 							"type": "text"
 						},
 						{
 							"key": "txtDuration-1-6",
 							"value": "",
-							"description": "",
 							"type": "text"
 						}
 					]
 				},
+              "url": {
+                "raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Update_Timeesheet_Grid",
+                "host": [
+                  "{{HRM_HOST}}"
+                ],
+                "path": [
+                  "lib",
+                  "controllers",
+                  "CentralController.php"
+                ],
+                "query": [
+                  {
+                    "key": "timecode",
+                    "value": "Time"
+                  },
+                  {
+                    "key": "action",
+                    "value": "Update_Timeesheet_Grid"
+                  }
+                ]
+              },
 				"description": "For each `timesheetIds`\n- auto fill timesheet for 40 hours a week\n- auto fill public holiday for 8 hours"
 			},
 			"response": []
@@ -1123,7 +1070,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"type": "text/javascript",
+                      "id": "08fce3d6-d4f4-43e4-a9d8-e0d2bc070a10",
 						"exec": [
 							"var txtStartDate = postman.getEnvironmentVariable(\"txtStartDate\")",
 							"var timesheetId = postman.getEnvironmentVariable(\"timesheetId\")",
@@ -1133,6 +1080,7 @@
 							"",
 							"if (!responseBody.has(\"Submit failed\") ",
 							"        && !responseBody.has(\"succeeded\") ) {",
+                          "    postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"G10\", msg: \"Error - G10\"}))",
 							"    tests[\"E3. Huh? Please contact system administrator. \"] = 0;",
 							"    postman.setNextRequest(null)",
 							"}",
@@ -1159,6 +1107,7 @@
 							"    } else {",
 							"        // E1. Something wrong with total working hours",
 							"        tests[\"Total working hrs of wk \"+ txtStartDate + \" is \" + total + \". Please manual update yourself.\"] = 0",
+                          "        postman.setEnvironmentVariable(\"STATUS\", JSON.stringify({code: \"G20\", msg: \"Total working hours exceed 40. Manual update yourself.\"}))",
 							"        console.log(\"[SubmitTimesheet] Found\", total, \". proceed for next week.\")",
 							"        isThisWeekError = true",
 							"    }",
@@ -1193,48 +1142,21 @@
 							"",
 							"",
 							""
-						]
+                        ],
+                      "type": "text/javascript"
 					}
 				}
 			],
 			"request": {
-				"url": {
-					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Submit_Timesheet",
-					"host": [
-						"{{HRM_HOST}}"
-					],
-					"path": [
-						"lib",
-						"controllers",
-						"CentralController.php"
-					],
-					"query": [
-						{
-							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
-						},
-						{
-							"key": "action",
-							"value": "Submit_Timesheet",
-							"equals": true,
-							"description": ""
-						}
-					],
-					"variable": []
-				},
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded",
-						"description": ""
+                      "value": "application/x-www-form-urlencoded"
 					},
 					{
 						"key": "Upgrade-Insecure-Requests",
 						"value": "1",
-						"description": "",
 						"disabled": true
 					}
 				],
@@ -1244,32 +1166,48 @@
 						{
 							"key": "token",
 							"value": "{{token}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtEmployeeId",
 							"value": "{{employeeId}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtTimesheetId",
 							"value": "{{timesheetId}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtStartDate",
 							"value": "{{txtStartDate}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
 						},
 						{
 							"key": "txtEndDate",
 							"value": "{{txtEndDate}}",
-							"type": "text",
-							"description": ""
+                          "type": "text"
+                        }
+                    ]
+                },
+              "url": {
+                "raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=Submit_Timesheet",
+                "host": [
+                  "{{HRM_HOST}}"
+                ],
+                "path": [
+                  "lib",
+                  "controllers",
+                  "CentralController.php"
+                ],
+                "query": [
+                  {
+                    "key": "timecode",
+                    "value": "Time"
+                  },
+                  {
+                    "key": "action",
+                    "value": "Submit_Timesheet"
 						}
 					]
 				},
@@ -1281,6 +1219,21 @@
 			"name": "Verify_Timesheet",
 			"event": [
 				{
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "var verifyList = postman.getEnvironmentVariable(\"verifyList\")",
+                      "",
+                      "// F1. Pop list to get first timesheetId",
+                      "verifyList = JSON.parse(verifyList)",
+                      "timesheetId = verifyList.pop()",
+                      "postman.setEnvironmentVariable(\"verifyList\", JSON.stringify(verifyList, null, 2))",
+                      "postman.setEnvironmentVariable(\"timesheetId\", timesheetId);"
+                    ]
+                  }
+                },
+              {
 					"listen": "test",
 					"script": {
 						"type": "text/javascript",
@@ -1335,24 +1288,15 @@
 							"}"
 						]
 					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var verifyList = postman.getEnvironmentVariable(\"verifyList\")",
-							"",
-							"// F1. Pop list to get first timesheetId",
-							"verifyList = JSON.parse(verifyList)",
-							"timesheetId = verifyList.pop()",
-							"postman.setEnvironmentVariable(\"verifyList\", JSON.stringify(verifyList, null, 2))",
-							"postman.setEnvironmentVariable(\"timesheetId\", timesheetId);"
-						]
-					}
 				}
 			],
 			"request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": ""
+              },
 				"url": {
 					"raw": "{{HRM_HOST}}/lib/controllers/CentralController.php?timecode=Time&action=View_Timesheet&id={{timesheetId}}",
 					"host": [
@@ -1366,30 +1310,17 @@
 					"query": [
 						{
 							"key": "timecode",
-							"value": "Time",
-							"equals": true,
-							"description": ""
+                          "value": "Time"
 						},
 						{
 							"key": "action",
-							"value": "View_Timesheet",
-							"equals": true,
-							"description": ""
+                          "value": "View_Timesheet"
 						},
 						{
 							"key": "id",
-							"value": "{{timesheetId}}",
-							"equals": true,
-							"description": ""
+                          "value": "{{timesheetId}}"
 						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+                    ]
 				},
 				"description": "For each `timesheetIds`\n1. Submitted\n2. Working hours >= 40\n3. Display filled projects"
 			},
@@ -1432,6 +1363,12 @@
 				}
 			],
 			"request": {
+              "method": "GET",
+              "header": [],
+              "body": {
+                "mode": "raw",
+                "raw": ""
+              },
 				"url": {
 					"raw": "{{HRM_HOST}}/index.php?ACT=logout",
 					"host": [
@@ -1443,18 +1380,9 @@
 					"query": [
 						{
 							"key": "ACT",
-							"value": "logout",
-							"equals": true,
-							"description": ""
+                          "value": "logout"
 						}
-					],
-					"variable": []
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+                    ]
 				},
 				"description": "- wipe working environments"
 			},

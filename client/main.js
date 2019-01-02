@@ -4,15 +4,37 @@ $(function () {
 
     // web socket
     socket.on('log_message', function (obj) {
+        // write log to panel
         let clz = obj["class"] === undefined ? null : obj["class"];
         let msg = obj["data"];
 
         let time = $("<div>").addClass("chip time").text(new Date().toTimeString().split(' ')[0]);
-        let span = $("<span>").addClass(clz).text(msg);
+        let span = $("<span>").addClass(clz).html(msg);
 
         $('#messages').append($('<li>').append(time).append(span));
         if ($("#scroll")[0].checked)
             window.scrollTo(0, document.body.scrollHeight);
+
+    }).on('toast', function (obj) {
+        // show toast
+        if (!obj || !obj.data)
+            return;
+
+        let clz = obj["class"] === undefined || obj["class"] == null ? "" : obj["class"];
+        M.toast({
+            html: obj.data,
+            classes: clz
+        })
+    });
+
+    // subscribe click action to fill project/activity
+    $("#panel").on("click", "a[data-project], a[data-activity]", function () {
+        if ($(this).attr("data-project")) {
+            $("#project").val($(this).attr("data-project"))[0].focus();
+        }
+        if ($(this).attr("data-activity")) {
+            $("#activity").val($(this).attr("data-activity"))[0].focus();
+        }
     });
 
     // set default values
@@ -30,6 +52,7 @@ $(function () {
     // form submit event handler
     $("#form").submit(function (e) {
         e.preventDefault();
+        M.Toast.dismissAll();
 
         let data = {};
         let x = $("#password").val();
@@ -37,7 +60,7 @@ $(function () {
         data.project = $("#project").val();
         data.activity = $("#activity").val();
         data.month = $("#month").val();
-        data.session = window.btoa(encodeURIComponent(data.user + x));
+        data.session = Base64.e(encodeURIComponent(data.user + x));
 
         if ($("#password").hasClass("masked")) {
             data.session = x;
