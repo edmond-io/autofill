@@ -137,6 +137,10 @@ sendErr = function (data, userName, clazz) {
     originConsoleErr(data);
 };
 
+sendHTML = function (data, userName) {
+    eventEmitter.emit('logging', 'preview', data, null, userName);
+};
+
 toast = function (data, userName, clazz) {
     eventEmitter.emit('logging', 'toast', data, clazz, userName);
     if (process.env.NODE_ENV === 'development') originConsoleLog("TOAST: " + data);

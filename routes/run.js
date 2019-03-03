@@ -54,6 +54,12 @@ function runNewman(userName) {
             message = args.assertion,
             isPass = args.error === null;
 
+
+        if (isHTML(message)) {
+            sendHTML(message, userName);
+            return;
+        }
+
         // customize message
         switch (requestId) {
             case 'Validate_Activity':
@@ -71,6 +77,7 @@ function runNewman(userName) {
                 break;
 
         }
+
 
         if (isPass)
             send(`[${requestId}] ${message}`, userName);
@@ -103,6 +110,10 @@ function runNewman(userName) {
         }
         send(`Completed in ${summary.run.timings.completed - summary.run.timings.started} ms.`, userName);
     });
+}
+
+function isHTML(assertion) {
+    return assertion.startsWith("<!DOCTYPE");
 }
 
 

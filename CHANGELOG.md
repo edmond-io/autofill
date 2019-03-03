@@ -1,10 +1,16 @@
 # CHANGELOG
 
-## [1.2.0] - 20181208
+## [1.2.1] - 20190303
+### Added
+- [Pre_Fetch_Timesheet] to prevent "Fail to Fetch"
+
+## [1.2.0] - 20190102
 ### Added
 - Click on project / activity
+
 ### Changed
 - List all projects and activities
+
 ### Fixed
 - Cross-year regarded as pre-fill bug
 
@@ -15,6 +21,7 @@
 ## [1.1.3] - 20181208
 ### Added
 - Health check page `/healthcheck`
+
 ### Changed
 - Change Log show top 5 updates only
 

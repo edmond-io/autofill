@@ -41,11 +41,12 @@ The flow of the requests should be:
 2. Validate Project
 3. Validate Activities
 4. HK Holiday
-5. Fetch Next Timesheet
-6. Update Timesheet
-7. Submit Timesheet
-8. Verify Timesheet
-9. Logout
+5. Pre Fetch Timesheet
+6. Fetch Next Timesheet
+7. Update Timesheet
+8. Submit Timesheet
+9. Verify Timesheet
+10. Logout
 
 
 ## About OrangeHRM version

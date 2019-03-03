@@ -25,15 +25,23 @@ $(function () {
             html: obj.data,
             classes: clz
         })
+    }).on('preview', function (obj) {
+        if (!obj || !obj.data)
+            return;
+
+        // let iframe = $("#preview").removeClass("hidden")[0];
+        // iframe.src = 'data:text/html;charset=utf-8,' + encodeURI(obj.data);
     });
 
     // subscribe click action to fill project/activity
     $("#panel").on("click", "a[data-project], a[data-activity]", function () {
         if ($(this).attr("data-project")) {
             $("#project").val($(this).attr("data-project"))[0].focus();
+            $("#form").submit();
         }
         if ($(this).attr("data-activity")) {
             $("#activity").val($(this).attr("data-activity"))[0].focus();
+            $("#form").submit();
         }
     });
 
