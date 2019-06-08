@@ -1,8 +1,8 @@
 {
   "name": "autofill",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "homepage": "https://qcom.herokuapp.com/",
-  "description": "This tool helps you auto-fill annonying timesheet in orangeHRM. It supports searching project and activity by name.",
+  "description": "This tool helps you auto-fill annoying timesheet in orangeHRM. It supports searching project and activity by name.",
   "main": "app.js",
   "scripts": {
     "start": "npm install && node app.js",

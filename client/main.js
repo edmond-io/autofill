@@ -12,8 +12,12 @@ $(function () {
         let span = $("<span>").addClass(clz).html(msg);
 
         $('#messages').append($('<li>').append(time).append(span));
-        if ($("#scroll")[0].checked)
+      if ($('#scroll')[0].checked) {
             window.scrollTo(0, document.body.scrollHeight);
+      }
+
+      // enable the submit button
+      $('#run').removeAttr('disable');
 
     }).on('toast', function (obj) {
         // show toast
@@ -61,6 +65,8 @@ $(function () {
     $("#form").submit(function (e) {
         e.preventDefault();
         M.Toast.dismissAll();
+
+      $('#run').attr('disabled', 'disabled');
 
         let data = {};
         let x = $("#password").val();

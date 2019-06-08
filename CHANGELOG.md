@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [1.2.2] - 20190608
+### Added
+- Disable button after form submit 
+
+### Fixed
+- Fix project and activity selection
+
 ## [1.2.1] - 20190303
 ### Added
 - [Pre_Fetch_Timesheet] to prevent "Fail to Fetch"
