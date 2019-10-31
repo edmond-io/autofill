@@ -15,7 +15,7 @@
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "marked": "^0.5.2",
+    "marked": "^0.7.0",
     "newman": "^4.2.2",
     "newman-reporter-console": "file:newman-reporter-console",
     "serve-index": "^1.9.1",
