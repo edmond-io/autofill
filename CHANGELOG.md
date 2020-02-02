@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [1.2.3] - 20200202
+### Added
+- Re-enable button after message received
+
 ## [1.2.2] - 20190608
 ### Added
 - Disable button after form submit 

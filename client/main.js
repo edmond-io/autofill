@@ -17,7 +17,7 @@ $(function () {
       }
 
       // enable the submit button
-      $('#run').removeAttr('disable');
+      $('#run').removeAttr('disabled');
 
     }).on('toast', function (obj) {
         // show toast
@@ -31,7 +31,7 @@ $(function () {
         });
 
       // enable the submit button
-      $('#run').removeAttr('disable');
+      $('#run').removeAttr('disabled');
     }).on('preview', function (obj) {
         if (!obj || !obj.data)
             return;
