@@ -28,7 +28,10 @@ $(function () {
         M.toast({
             html: obj.data,
             classes: clz
-        })
+        });
+
+      // enable the submit button
+      $('#run').removeAttr('disable');
     }).on('preview', function (obj) {
         if (!obj || !obj.data)
             return;
